@@ -12,7 +12,7 @@ import { LocalStorageService } from "@services/local-storage.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FavoritesComponent implements OnInit {
-  public pictures: PictureInterface[] = [];
+  pictures: PictureInterface[] = [];
   constructor(private localStorageService: LocalStorageService) {}
 
   ngOnInit(): void {
@@ -29,7 +29,7 @@ export class FavoritesComponent implements OnInit {
   //   }
   // }
 
-  public setToFavorites(picture: PictureInterface) {
+  setToFavorites(picture: PictureInterface): void {
     this.localStorageService.addToLocalStorage(picture);
   }
 }

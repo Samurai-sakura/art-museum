@@ -3,15 +3,17 @@ import { HttpClientModule } from "@angular/common/http";
 import { PictureInterface } from "@interfaces/data.interface";
 import { Pagination } from "@interfaces/pagination.interface";
 import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
-import { CommonModule, SlicePipe } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Config } from "@interfaces/config.interface";
 import { pictureCardMapper } from "@utils/picture-mapper";
 import { LoadingSpinerComponent } from "@components/loading-spiner/loading-spiner.component";
 import { RouterLink } from "@angular/router";
-import { FormsModule } from "@angular/forms";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { LocalStorageService } from "@services/local-storage.service";
 import { PaginationService } from "@services/pagination.service";
 import { ResponseService } from "@services/response.service";
+import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
+
 
 @Component({
   selector: "app-home",
@@ -19,11 +21,11 @@ import { ResponseService } from "@services/response.service";
   imports: [
     HttpClientModule,
     NgbPaginationModule,
-    SlicePipe,
     LoadingSpinerComponent,
     CommonModule,
     RouterLink,
     FormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: "./home.component.html",
   styleUrl: "./home.component.scss",
@@ -31,25 +33,29 @@ import { ResponseService } from "@services/response.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements OnInit {
-  public pictures: PictureInterface[] = [];
-  public paginationParameters: Pagination = {
+  pictures: PictureInterface[] = [];
+  paginationParameters: Pagination = {
     total: 0,
     limit: 0,
     next_url: "",
     prev_url: "",
     current_page: 0,
   };
-  public searchPictures: PictureInterface[] = [];
-  public isPagination = false;
-  public isPicture = true;
-  public config: Config = {
+  searchPictures: PictureInterface[] = [];
+  isPagination = false;
+  isPicture = true;
+  config: Config = {
     iiif_url: "",
     website_url: "",
   };
-  public searchString = "";
-  public loading = false;
-  public pageNumber = 1;
-  public paginationPictures: PictureInterface[] = [];
+  searchString = "";
+  private searchSubject: Subject<string> = new Subject<string>(); 
+  loading = false;
+  pageNumber = 1;
+  paginationPictures: PictureInterface[] = [];
+  searchTest = new FormGroup({
+    search: new FormControl('fdsa'),
+  });
   constructor(
     private responseService: ResponseService,
     private paginationService: PaginationService,
@@ -65,6 +71,7 @@ export class HomeComponent implements OnInit {
       this.searchPictures = this.pictures;
       this.loading = false;
     });
+    
     this.loading = true;
     this.paginationService.getData(this.pageNumber).subscribe((res) => {
       this.paginationPictures = res.data;
@@ -75,9 +82,24 @@ export class HomeComponent implements OnInit {
       );
       this.loading = false;
     });
+
+    this.searchSubject
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        this.searchArts();
+      });
   }
 
-  public searchArts() {
+  onSearchChange(value: Event): void {
+    const target = value.target as HTMLInputElement
+    this.searchString = target.value; 
+    this.searchSubject.next(target.value); 
+  }
+
+  searchArts(): void {
     if (!this.searchString) {
       return;
     }
@@ -108,7 +130,7 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  public selectChanged(value: Event) {
+  selectChanged(value: Event): void {
     const target = value.target as HTMLSelectElement;
     if (target.value === "title") {
       this.searchPictures.sort((a, b) => {
@@ -143,7 +165,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  public onPageChanged(pageNumber: number) {
+  onPageChanged(pageNumber: number): void {
     this.paginationService.getData(pageNumber).subscribe((res) => {
       this.paginationPictures = res.data.splice(0, 3);
       this.pageNumber = res.pagination.current_page;
@@ -154,7 +176,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  public setToFavorites(picture: PictureInterface) {
+  setToFavorites(picture: PictureInterface): void {
     this.localStorageService.addToLocalStorage(picture);
   }
 }

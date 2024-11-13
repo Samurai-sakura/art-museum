@@ -20,9 +20,9 @@ import { onePictureCardMapper } from "@utils/one-picture-mapper";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailsComponent implements OnInit {
-  public itemId: number | string | null = null;
-  public pageNumber: boolean | null | string = null;
-  public picture: PictureInterface = {
+  itemId: number | string | null = null;
+  pageNumber: boolean | null | string = null;
+  picture: PictureInterface = {
     id: 0,
     title: "",
     thumbnail: {
@@ -41,13 +41,13 @@ export class DetailsComponent implements OnInit {
     image_url: "",
     main_reference_number: "",
   };
-  public loading = false;
-  public painter_info: Painter = {
+  loading = false;
+  painter_info: Painter = {
     main_reference_number: "",
     painter_nationality: "",
   };
-  public artist_life: string | null | RegExpMatchArray = "";
-  public config: Config = {
+  artist_life: string | null | RegExpMatchArray = "";
+  config: Config = {
     iiif_url: "",
     website_url: "",
   };
@@ -74,7 +74,7 @@ export class DetailsComponent implements OnInit {
     });
   }
 
-  public setToFavorites() {
+  setToFavorites(): void {
     this.localStorageService.addToLocalStorage(this.picture);
   }
 }

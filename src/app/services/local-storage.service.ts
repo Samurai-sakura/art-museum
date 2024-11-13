@@ -16,7 +16,7 @@ export class LocalStorageService {
     this.loadFavorites();
   }
 
-  private loadFavorites() {
+  private loadFavorites(): void {
     if (typeof window !== "undefined") {
       const favorites = localStorage.getItem("favorites");
       this.favorites = favorites ? JSON.parse(favorites).pictures : [];
@@ -24,7 +24,7 @@ export class LocalStorageService {
     }
   }
 
-  addToLocalStorage(pictureArgument: PictureInterface) {
+  addToLocalStorage(pictureArgument: PictureInterface): void {
     const favorites: string | null = localStorage.getItem("favorites");
 
     if (favorites) {
