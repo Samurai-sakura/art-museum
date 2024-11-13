@@ -2,7 +2,7 @@ import { Config } from "../interfaces/config.interface";
 import { PictureInterface } from "../interfaces/data.interface";
 import { DEDAULT_IMAGE_PASS } from "../shared/constants/default-image-pass";
 
-export function pictureCardMapper(data: PictureInterface[], config: Config) {
+export function pictureCardMapper(data: PictureInterface[], config: Config): PictureInterface[] {
   data.map((picture) => {
     if (picture.image_id) {
       picture.image_url =
