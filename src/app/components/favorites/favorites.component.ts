@@ -16,15 +16,18 @@ export class FavoritesComponent implements OnInit {
   constructor(private localStorageService: LocalStorageService) {}
 
   ngOnInit(): void {
-    this.loadItems();
+    // this.loadItems();
+    this.localStorageService.favorites$.subscribe((data) => {
+      this.pictures = data;
+    });
   }
 
-  public loadItems() {
-    const pictures = localStorage.getItem("favorites");
-    if (pictures) {
-      this.pictures = JSON.parse(pictures).pictures;
-    }
-  }
+  // public loadItems() {
+  //   const pictures = localStorage.getItem("favorites");
+  //   if (pictures) {
+  //     this.pictures = JSON.parse(pictures).pictures;
+  //   }
+  // }
 
   public setToFavorites(picture: PictureInterface) {
     this.localStorageService.addToLocalStorage(picture);
