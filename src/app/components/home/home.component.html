@@ -8,27 +8,22 @@
 
 <div class="home__container__input">
   <div class="input__container">
-    <input
+    <form action="" [formGroup]="searchForm">
+      <input
       type="text"
+      formControlName="search"
       class="home__input"
       placeholder="Search Art, Artist, Work..."
-      [(ngModel)]="searchString"
       (input)="onSearchChange($event)"
     /><img src="icons/search.png" class="home__input__image" alt="Поиск" />
+    </form>
+    @if(!searchForm.controls.search.valid){
+      <div class="search__text">
+        <span style="color: red">Неверные символы</span>
+      </div>
+    }
   </div>
 </div>
-
-<!-- <div class="home__container__input">
-  <div class="input__container" [formGroup]="searchTest">
-    <input
-      formControlName="search"
-      type="text"
-      class="home__input"
-      placeholder="Search Art, Artist, Work..."
-      (input)="onSearchChange($event)"
-    /><img src="icons/search.png" class="home__input__image" alt="Поиск" />
-  </div>
-</div> -->
 
 <div
   class="pictures__container__input"
@@ -49,18 +44,20 @@
         <span class="picture__text_public">Public</span>
       </div>
       <div class="picture__favorites">
-        <button class="button__favorites" (click)="setToFavorites(picture)">
+        <button #button class="button__favorites" (click)="setToFavorites(picture, button)">
           <img src="icons/Vector.png" alt="" />
         </button>
       </div>
     </div>
   }
 
-  <select name="sort" (change)="selectChanged($event)" class="input__select">
-    <option value="title">Отсортировать по названию</option>
-    <option value="author">Отсортировать по автору</option>
-    <option value="place">Отсортировать по стране</option>
-  </select>
+  @if(searchForm.controls.search.valid){
+    <select name="sort" (change)="selectChanged($event)" class="input__select">
+      <option value="title">Отсортировать по названию</option>
+      <option value="author">Отсортировать по автору</option>
+      <option value="place">Отсортировать по стране</option>
+    </select>
+  }
 </div>
 
 <div class="home__container__text">
@@ -88,7 +85,7 @@
             <span class="pagination__text__public">Public</span>
           </div>
           <div class="pagination__button">
-            <button class="button__favorites" (click)="setToFavorites(picture)">
+            <button #button class="button__favorites" (click)="setToFavorites(picture, button)">
               <img src="icons/Vector.png" alt="" />
             </button>
           </div>
@@ -141,7 +138,7 @@
           <span class="picture__text_public">Public</span>
         </div>
         <div class="picture__favorites">
-          <button class="button__favorites" (click)="setToFavorites(picture)">
+          <button #button class="button__favorites" (click)="setToFavorites(picture, button)">
             <img src="icons/Vector.png" alt="" />
           </button>
         </div>

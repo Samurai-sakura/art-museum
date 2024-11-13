@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { PictureInterface } from "@interfaces/data.interface";
 import { Pagination } from "@interfaces/pagination.interface";
@@ -8,12 +8,11 @@ import { Config } from "@interfaces/config.interface";
 import { pictureCardMapper } from "@utils/picture-mapper";
 import { LoadingSpinerComponent } from "@components/loading-spiner/loading-spiner.component";
 import { RouterLink } from "@angular/router";
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { LocalStorageService } from "@services/local-storage.service";
 import { PaginationService } from "@services/pagination.service";
 import { ResponseService } from "@services/response.service";
 import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
-
 
 @Component({
   selector: "app-home",
@@ -24,7 +23,6 @@ import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
     LoadingSpinerComponent,
     CommonModule,
     RouterLink,
-    FormsModule,
     ReactiveFormsModule
   ],
   templateUrl: "./home.component.html",
@@ -41,6 +39,7 @@ export class HomeComponent implements OnInit {
     prev_url: "",
     current_page: 0,
   };
+  @ViewChild('button') button!: ElementRef;
   searchPictures: PictureInterface[] = [];
   isPagination = false;
   isPicture = true;
@@ -53,9 +52,11 @@ export class HomeComponent implements OnInit {
   loading = false;
   pageNumber = 1;
   paginationPictures: PictureInterface[] = [];
-  searchTest = new FormGroup({
-    search: new FormControl('fdsa'),
+
+  searchForm = new FormGroup({
+      search: new FormControl("", [Validators.pattern(/^[A-Za-zА-Яа-яЁё\s]+$/)]),
   });
+
   constructor(
     private responseService: ResponseService,
     private paginationService: PaginationService,
@@ -100,29 +101,29 @@ export class HomeComponent implements OnInit {
   }
 
   searchArts(): void {
-    if (!this.searchString) {
+    if (!this.searchForm.get('search')?.value) {
       return;
     }
     this.searchPictures = this.pictures.filter((picture) =>
-      picture.title.toLowerCase().includes(this.searchString.toLowerCase())
+      picture.title.toLowerCase().includes(this.searchForm.value.search!.toLowerCase())
     );
     this.searchPictures = this.searchPictures.concat(
       this.paginationPictures.filter((picture) =>
-        picture.title.toLowerCase().includes(this.searchString.toLowerCase())
+        picture.title.toLowerCase().includes(this.searchForm.value.search!.toLowerCase())
       )
     );
     this.searchPictures = this.searchPictures.concat(
       this.pictures.filter((picture) =>
         picture.artist_title
           .toLowerCase()
-          .includes(this.searchString.toLowerCase())
+          .includes(this.searchForm.value.search!.toLowerCase())
       )
     );
     this.searchPictures = this.searchPictures.concat(
       this.paginationPictures.filter((picture) =>
         picture.artist_title
           .toLowerCase()
-          .includes(this.searchString.toLowerCase())
+          .includes(this.searchForm.value.search!.toLowerCase())
       )
     );
     this.searchPictures = this.searchPictures.filter(
@@ -176,7 +177,8 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  setToFavorites(picture: PictureInterface): void {
+  setToFavorites(picture: PictureInterface, link: HTMLButtonElement): void {
     this.localStorageService.addToLocalStorage(picture);
+    link.style.backgroundColor = 'black';
   }
 }

@@ -49,6 +49,13 @@
   display: inline-block;
 }
 
+.search__text{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+}
+
 .home__input__image {
   position: absolute;
   top: 25%;
