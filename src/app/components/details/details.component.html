@@ -1,33 +1,38 @@
-<app-loading-spiner *ngIf="loading"></app-loading-spiner>
+@if(loading){
+  <app-loading-spiner></app-loading-spiner>
+}
 
-<div class="details__container" *ngIf="!loading">
-  <div class="picture__container">
-    <img [src]="picture.image_url" alt="" class="image__item" />
-    <button class="button__favorites" (click)="setToFavorites()">
-      <img src="icons/Vector.png" alt="" />
-    </button>
+@if(!loading){
+  <div class="details__container">
+    <div class="picture__container">
+      <img [src]="picture.image_url" alt="" class="image__item" />
+      <button class="button__favorites" (click)="setToFavorites()">
+        <img src="icons/Vector.png" alt="" />
+      </button>
+    </div>
+    <div class="text__container">
+      <span class="text__title">{{ picture.title }}</span>
+      <span class="artist__title">{{ picture.artist_title }}</span>
+      <span class="date__text">{{ painter_info.main_reference_number }}</span>
+      <span class="info__title">Overview</span>
+      <span class="picture__info">
+        <span class="orange__text">Artist nacionality: </span>
+        {{ painter_info.painter_nationality }}
+      </span>
+      <span class="picture__info">
+        <span class="orange__text">Dimensions: Sheet: </span>
+        {{ picture.dimensions }}
+      </span>
+      <span class="picture__info">
+        <span class="orange__text">Credit Line: </span>
+        {{ picture.credit_line }}
+      </span>
+      <span class="picture__info">
+        <span class="orange__text">Repository: </span>
+        {{ picture.place_of_origin }}
+      </span>
+      <span class="text__public">Public</span>
+    </div>
   </div>
-  <div class="text__container">
-    <span class="text__title">{{ picture.title }}</span>
-    <span class="artist__title">{{ picture.artist_title }}</span>
-    <span class="date__text">{{ painter_info.main_reference_number }}</span>
-    <span class="info__title">Overview</span>
-    <span class="picture__info">
-      <span class="orange__text">Artist nacionality: </span>
-      {{ painter_info.painter_nationality }}
-    </span>
-    <span class="picture__info">
-      <span class="orange__text">Dimensions: Sheet: </span>
-      {{ picture.dimensions }}
-    </span>
-    <span class="picture__info">
-      <span class="orange__text">Credit Line: </span>
-      {{ picture.credit_line }}
-    </span>
-    <span class="picture__info">
-      <span class="orange__text">Repository: </span>
-      {{ picture.place_of_origin }}
-    </span>
-    <span class="text__public">Public</span>
-  </div>
-</div>
+}
+

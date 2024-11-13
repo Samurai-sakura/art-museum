@@ -13,10 +13,22 @@
       class="home__input"
       placeholder="Search Art, Artist, Work..."
       [(ngModel)]="searchString"
-      (input)="searchArts()"
+      (input)="onSearchChange($event)"
     /><img src="icons/search.png" class="home__input__image" alt="Поиск" />
   </div>
 </div>
+
+<!-- <div class="home__container__input">
+  <div class="input__container" [formGroup]="searchTest">
+    <input
+      formControlName="search"
+      type="text"
+      class="home__input"
+      placeholder="Search Art, Artist, Work..."
+      (input)="onSearchChange($event)"
+    /><img src="icons/search.png" class="home__input__image" alt="Поиск" />
+  </div>
+</div> -->
 
 <div
   class="pictures__container__input"
@@ -56,74 +68,85 @@
   <span class="big__text">Our special gallery</span>
 </div>
 
-<div class="pagination__pictures" *ngIf="!loading">
-  @for (picture of paginationPictures; track picture.id) {
-    <div class="pagination__item">
-      <a
-        class="link"
-        [routerLink]="['details', picture.id]"
-        routerLinkActive="active"
-      >
-        <div class="image__container">
-          <img [src]="picture.image_url" alt="" class="image__item" />
-        </div>
-      </a>
-      <div class="pagination__text__container">
-        <div class="picture__text__container">
-          <div class="picture__text__title">{{ picture.title }}</div>
-          <span class="picture__text__artist">{{ picture.artist_title }}</span>
-          <span class="pagination__text__public">Public</span>
-        </div>
-        <div class="pagination__button">
-          <button class="button__favorites" (click)="setToFavorites(picture)">
-            <img src="icons/Vector.png" alt="" />
-          </button>
+@if(!loading){
+  <div class="pagination__pictures">
+    @for (picture of paginationPictures; track picture.id) {
+      <div class="pagination__item">
+        <a
+          class="link"
+          [routerLink]="['details', picture.id]"
+          routerLinkActive="active"
+        >
+          <div class="image__container">
+            <img [src]="picture.image_url" alt="" class="image__item" />
+          </div>
+        </a>
+        <div class="pagination__text__container">
+          <div class="picture__text__container">
+            <div class="picture__text__title">{{ picture.title }}</div>
+            <span class="picture__text__artist">{{ picture.artist_title }}</span>
+            <span class="pagination__text__public">Public</span>
+          </div>
+          <div class="pagination__button">
+            <button class="button__favorites" (click)="setToFavorites(picture)">
+              <img src="icons/Vector.png" alt="" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  }
-</div>
+    }
+  </div>
+}
 
-<app-loading-spiner *ngIf="loading"></app-loading-spiner>
+@if(loading){
+  <app-loading-spiner></app-loading-spiner>
+}
 
-<div class="navigation" *ngIf="!loading">
-  <ngb-pagination
-    [collectionSize]="paginationParameters.total"
-    [(page)]="paginationParameters.current_page"
-    [maxSize]="3"
-    [rotate]="true"
-    [boundaryLinks]="true"
-    (pageChange)="onPageChanged($event)"
-  />
-</div>
+@if(!loading){
+  <div class="navigation">
+    <ngb-pagination
+      [collectionSize]="paginationParameters.total"
+      [(page)]="paginationParameters.current_page"
+      [maxSize]="3"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      (pageChange)="onPageChanged($event)"
+    />
+  </div>
+}
 
 <div class="home__container__text">
   <span class="little__text">Here some more</span>
   <span class="big__text">Other works for you</span>
 </div>
 
-<app-loading-spiner *ngIf="loading"></app-loading-spiner>
+@if(loading){
+  <app-loading-spiner></app-loading-spiner>
+}
 
-<div class="pictures__container" *ngIf="!loading">
-  @for (picture of pictures; track picture.id) {
-    <div class="picture__item">
-      <a
-        class="link__menu"
-        [routerLink]="['details', picture.id]"
-        routerLinkActive="active"
-      >
-        <img [src]="picture.image_url" alt="No image" class="image__item" />
-      </a>
-      <div class="picture__text__container">
-        <div class="picture__text__title">{{ picture.title }}</div>
-        <span class="picture__text__artist">{{ picture.artist_title }}</span>
-        <span class="picture__text_public">Public</span>
+@if(!loading){
+  <div class="pictures__container">
+    @for (picture of pictures; track picture.id) {
+      <div class="picture__item">
+        <a
+          class="link__menu"
+          [routerLink]="['details', picture.id]"
+          routerLinkActive="active"
+        >
+          <img [src]="picture.image_url" alt="No image" class="image__item" />
+        </a>
+        <div class="picture__text__container">
+          <div class="picture__text__title">{{ picture.title }}</div>
+          <span class="picture__text__artist">{{ picture.artist_title }}</span>
+          <span class="picture__text_public">Public</span>
+        </div>
+        <div class="picture__favorites">
+          <button class="button__favorites" (click)="setToFavorites(picture)">
+            <img src="icons/Vector.png" alt="" />
+          </button>
+        </div>
       </div>
-      <div class="picture__favorites">
-        <button class="button__favorites" (click)="setToFavorites(picture)">
-          <img src="icons/Vector.png" alt="" />
-        </button>
-      </div>
-    </div>
-  }
-</div>
+    }
+  </div>
+}
+
