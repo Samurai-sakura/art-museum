@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { PictureInterface } from "@interfaces/data.interface";
-import { LocalStorageService } from "@services/local-storage.service";
+import { LocalStorageService } from "@app/services/add-remove-local-storage.service";
 
 @Component({
   selector: "app-favorites",

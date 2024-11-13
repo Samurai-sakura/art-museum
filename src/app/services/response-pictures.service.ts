@@ -6,10 +6,10 @@ import { environment } from "../../environments/environment.development";
 @Injectable({
   providedIn: "root",
 })
-export class DetailsService {
+export class ResponseService {
   constructor(private httpClient: HttpClient) {}
 
-  public getData(pageId: string | null): Observable<any> {
-    return this.httpClient.get(environment.apiUrl + `/${pageId}`);
+  getData(): Observable<any> {
+    return this.httpClient.get(environment.apiUrl);
   }
 }

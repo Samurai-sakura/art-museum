@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { DetailsService } from "./details.service";
+import { PaginationService } from "./response-pagination-pictures.service";
 
-describe("DetailsService", () => {
-  let service: DetailsService;
+describe("PaginationService", () => {
+  let service: PaginationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
-    service = TestBed.inject(DetailsService);
+    service = TestBed.inject(PaginationService);
   });
 
   it("should be created", () => {

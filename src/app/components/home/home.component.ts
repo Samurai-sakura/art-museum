@@ -9,9 +9,9 @@ import { pictureCardMapper } from "@utils/picture-mapper";
 import { LoadingSpinerComponent } from "@components/loading-spiner/loading-spiner.component";
 import { RouterLink } from "@angular/router";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { LocalStorageService } from "@services/local-storage.service";
-import { PaginationService } from "@services/pagination.service";
-import { ResponseService } from "@services/response.service";
+import { LocalStorageService } from "@app/services/add-remove-local-storage.service";
+import { PaginationService } from "@app/services/response-pagination-pictures.service";
+import { ResponseService } from "@app/services/response-pictures.service";
 import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 

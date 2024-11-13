@@ -6,10 +6,12 @@ import { environment } from "../../environments/environment.development";
 @Injectable({
   providedIn: "root",
 })
-export class ResponseService {
+export class PaginationService {
   constructor(private httpClient: HttpClient) {}
 
-  public getData(): Observable<any> {
-    return this.httpClient.get(environment.apiUrl);
+  getData(currentPage: number): Observable<any> {
+    return this.httpClient.get(
+      environment.apiUrl + `?page=${currentPage}&limit=10`
+    );
   }
 }
