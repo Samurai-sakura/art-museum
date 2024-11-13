@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { PictureInterface } from "@interfaces/data.interface";
 import { Pagination } from "@interfaces/pagination.interface";
@@ -13,6 +13,7 @@ import { LocalStorageService } from "@services/local-storage.service";
 import { PaginationService } from "@services/pagination.service";
 import { ResponseService } from "@services/response.service";
 import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-home",
@@ -57,6 +58,8 @@ export class HomeComponent implements OnInit {
       search: new FormControl("", [Validators.pattern(/^[A-Za-zА-Яа-яЁё\s]+$/)]),
   });
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private responseService: ResponseService,
     private paginationService: PaginationService,
@@ -65,7 +68,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    this.responseService.getData().subscribe((res) => {
+    this.responseService.getData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       this.paginationParameters = res.pagination;
       this.config = res.config;
       this.pictures = pictureCardMapper(res.data, this.config);
@@ -74,24 +77,27 @@ export class HomeComponent implements OnInit {
     });
     
     this.loading = true;
-    this.paginationService.getData(this.pageNumber).subscribe((res) => {
-      this.paginationPictures = res.data;
-      this.paginationPictures = this.paginationPictures.slice(0, 3);
-      this.paginationPictures = pictureCardMapper(
-        this.paginationPictures,
-        this.config
-      );
-      this.loading = false;
-    });
-
-    this.searchSubject
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged()
-      )
-      .subscribe(() => {
-        this.searchArts();
+    this.paginationService.getData(this.pageNumber)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.paginationPictures = res.data;
+        this.paginationPictures = this.paginationPictures.slice(0, 3);
+        this.paginationPictures = pictureCardMapper(
+          this.paginationPictures,
+          this.config
+        );
+        this.loading = false;
       });
+
+      this.searchSubject
+        .pipe(
+          debounceTime(500),
+          distinctUntilChanged(),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(() => {
+          this.searchArts();
+        });
   }
 
   onSearchChange(value: Event): void {
@@ -167,14 +173,17 @@ export class HomeComponent implements OnInit {
   }
 
   onPageChanged(pageNumber: number): void {
-    this.paginationService.getData(pageNumber).subscribe((res) => {
-      this.paginationPictures = res.data.splice(0, 3);
-      this.pageNumber = res.pagination.current_page;
-      this.paginationPictures = pictureCardMapper(
-        this.paginationPictures,
-        this.config
-      );
-    });
+    this.paginationService
+      .getData(pageNumber)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.paginationPictures = res.data.splice(0, 3);
+        this.pageNumber = res.pagination.current_page;
+        this.paginationPictures = pictureCardMapper(
+          this.paginationPictures,
+          this.config
+        );
+      });
   }
 
   setToFavorites(picture: PictureInterface, link: HTMLButtonElement): void {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { DetailsService } from "@services/details.service";
 import { PictureInterface } from "@interfaces/data.interface";
@@ -9,6 +9,7 @@ import { Config } from "@interfaces/config.interface";
 import { Painter } from "@interfaces/painter-info.interface";
 import { LocalStorageService } from "@services/local-storage.service";
 import { onePictureCardMapper } from "@utils/one-picture-mapper";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-details",
@@ -51,6 +52,9 @@ export class DetailsComponent implements OnInit {
     iiif_url: "",
     website_url: "",
   };
+
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private route: ActivatedRoute,
     private detailsService: DetailsService,
@@ -59,10 +63,10 @@ export class DetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.itemId = params.get("id");
 
-      this.detailsService.getData(this.itemId).subscribe((res) => {
+      this.detailsService.getData(this.itemId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
         this.picture = res.data;
         this.config = res.config;
         this.picture = onePictureCardMapper(this.picture, this.config);
@@ -74,7 +78,8 @@ export class DetailsComponent implements OnInit {
     });
   }
 
-  setToFavorites(): void {
+  setToFavorites(link: HTMLButtonElement): void {
     this.localStorageService.addToLocalStorage(this.picture);
+    link.style.backgroundColor = 'black';
   }
 }

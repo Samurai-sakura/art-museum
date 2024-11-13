@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { PictureInterface } from "@interfaces/data.interface";
 import { LocalStorageService } from "@services/local-storage.service";
 
@@ -13,11 +14,12 @@ import { LocalStorageService } from "@services/local-storage.service";
 })
 export class FavoritesComponent implements OnInit {
   pictures: PictureInterface[] = [];
+  private destroyRef = inject(DestroyRef);
   constructor(private localStorageService: LocalStorageService) {}
 
   ngOnInit(): void {
     // this.loadItems();
-    this.localStorageService.favorites$.subscribe((data) => {
+    this.localStorageService.favorites$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
       this.pictures = data;
     });
   }
