@@ -19,7 +19,7 @@
     </form>
     @if(!searchForm.controls.search.valid){
       <div class="search__text">
-        <span style="color: red">Неверные символы</span>
+        <span style="color: red">Invalid symbols</span>
       </div>
     }
   </div>
@@ -51,9 +51,9 @@
   
     @if(searchForm.controls.search.valid){
       <select name="sort" (change)="selectChanged($event)" class="input__select">
-        <option value="title">Отсортировать по названию</option>
-        <option value="author">Отсортировать по автору</option>
-        <option value="place">Отсортировать по стране</option>
+        <option value="title">Sort by title</option>
+        <option value="author">Sort by author</option>
+        <option value="place">Sort by country</option>
       </select>
     }
   </div>
