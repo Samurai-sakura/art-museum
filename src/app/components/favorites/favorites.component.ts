@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from "
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { PictureInterface } from "@interfaces/data.interface";
 import { LocalStorageService } from "@app/services/add-remove-local-storage.service";
+import { RouterLink, RouterModule } from "@angular/router";
 
 @Component({
   selector: "app-favorites",
   standalone: true,
-  imports: [],
+  imports: [RouterLink, RouterModule],
   templateUrl: "./favorites.component.html",
   styleUrl: "./favorites.component.scss",
   providers: [LocalStorageService],

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { DetailsService } from "@app/services/response-details-picture.service";
 import { PictureInterface } from "@interfaces/data.interface";
@@ -59,7 +59,8 @@ export class DetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private detailsService: DetailsService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +76,7 @@ export class DetailsComponent implements OnInit {
           this.picture.date_start + "-" + this.picture.date_end;
         this.painter_info.painter_nationality = this.picture.place_of_origin;
         this.loading = false;
+        this.cdr.detectChanges();
       });
     });
   }

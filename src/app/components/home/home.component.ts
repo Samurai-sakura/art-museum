@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { PictureInterface } from "@interfaces/data.interface";
 import { Pagination } from "@interfaces/pagination.interface";
@@ -62,7 +62,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private responseService: ResponseService,
     private paginationService: PaginationService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit(): void {
@@ -84,6 +85,7 @@ export class HomeComponent implements OnInit {
           this.config
         );
         this.loading = false;
+        this.cdr.detectChanges();
       });
 
       this.searchSubject

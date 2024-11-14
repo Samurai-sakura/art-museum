@@ -1,6 +1,6 @@
 <div class="header">
   <div class="header__container">
-    <a href=""><img src="icons/museum-logo 2.svg" alt="" /> </a>
+    <a [routerLink]="['home']" routerLinkActive="active"><img src="icons/museum-logo 2.svg" alt="" /> </a>
     <div class="header__links">
       @if(currentPath !== 'home'){
         <a href=""><img src="icons/home.png" class="header__load" alt="Home" /><span class="header__text">Home</span></a>

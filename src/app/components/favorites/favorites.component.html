@@ -18,7 +18,7 @@
 <div class="pictures__container">
   @for (picture of pictures; track picture.id) {
     <div class="picture__item">
-      <a href="" class="link__menu">
+      <a [routerLink]="['details', picture.id]" routerLinkActive="active" class="link__menu">
         <img [src]="picture.image_url" alt="" class="image__item" />
       </a>
       <div class="picture__text__container">
