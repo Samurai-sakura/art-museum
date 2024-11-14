@@ -6,7 +6,7 @@
   <div class="details__container">
     <div class="picture__container">
       <img [src]="picture.image_url" alt="" class="image__item" />
-      <button #button class="button__favorites" (click)="setToFavorites(button)">
+      <button [appIsFavorite]="picture.id" #button class="button__favorites" (click)="setToFavorites(button)">
         <img src="icons/Vector.png" alt="" />
       </button>
     </div>

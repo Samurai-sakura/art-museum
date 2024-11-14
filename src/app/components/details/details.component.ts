@@ -10,11 +10,12 @@ import { Painter } from "@interfaces/painter-info.interface";
 import { LocalStorageService } from "@app/services/add-remove-local-storage.service";
 import { onePictureCardMapper } from "@utils/one-picture-mapper";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { IsFavoriteDirective } from "@app/directives/is-favorite.directive";
 
 @Component({
   selector: "app-details",
   standalone: true,
-  imports: [HttpClientModule, LoadingSpinerComponent, CommonModule],
+  imports: [HttpClientModule, LoadingSpinerComponent, CommonModule, IsFavoriteDirective],
   templateUrl: "./details.component.html",
   styleUrl: "./details.component.scss",
   providers: [DetailsService, LocalStorageService],
@@ -80,6 +81,10 @@ export class DetailsComponent implements OnInit {
 
   setToFavorites(link: HTMLButtonElement): void {
     this.localStorageService.addToLocalStorage(this.picture);
+    if(link.style.backgroundColor == "black"){
+      link.style.backgroundColor = '#f9f9f9';
+      return;
+    }
     link.style.backgroundColor = 'black';
   }
 }

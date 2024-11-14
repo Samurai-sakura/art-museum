@@ -44,7 +44,7 @@
         <span class="picture__text_public">Public</span>
       </div>
       <div class="picture__favorites">
-        <button #button class="button__favorites" (click)="setToFavorites(picture, button)">
+        <button [appIsFavorite]="picture.id" #button class="button__favorites" (click)="setToFavorites(picture, button)">
           <img src="icons/Vector.png" alt="" />
         </button>
       </div>
@@ -85,7 +85,7 @@
             <span class="pagination__text__public">Public</span>
           </div>
           <div class="pagination__button">
-            <button #button class="button__favorites" (click)="setToFavorites(picture, button)">
+            <button [appIsFavorite]="picture.id" #button class="button__favorites" (click)="setToFavorites(picture, button)">
               <img src="icons/Vector.png" alt="" />
             </button>
           </div>
@@ -138,7 +138,7 @@
           <span class="picture__text_public">Public</span>
         </div>
         <div class="picture__favorites">
-          <button #button class="button__favorites" (click)="setToFavorites(picture, button)">
+          <button [appIsFavorite]="picture.id" #button class="button__favorites" (click)="setToFavorites(picture, button)">
             <img src="icons/Vector.png" alt="" />
           </button>
         </div>

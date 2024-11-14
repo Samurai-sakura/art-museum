@@ -14,6 +14,7 @@ import { PaginationService } from "@app/services/response-pagination-pictures.se
 import { ResponseService } from "@app/services/response-pictures.service";
 import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { IsFavoriteDirective } from "@app/directives/is-favorite.directive";
 
 @Component({
   selector: "app-home",
@@ -24,7 +25,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     LoadingSpinerComponent,
     CommonModule,
     RouterLink,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    IsFavoriteDirective
   ],
   templateUrl: "./home.component.html",
   styleUrl: "./home.component.scss",
@@ -188,6 +190,10 @@ export class HomeComponent implements OnInit {
 
   setToFavorites(picture: PictureInterface, link: HTMLButtonElement): void {
     this.localStorageService.addToLocalStorage(picture);
+    if(link.style.backgroundColor == "black"){
+      link.style.backgroundColor = '#f9f9f9';
+      return;
+    }
     link.style.backgroundColor = 'black';
   }
 }
