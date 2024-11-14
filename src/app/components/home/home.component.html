@@ -25,40 +25,39 @@
   </div>
 </div>
 
-<div
-  class="pictures__container__input"
-  *ngIf="searchString && searchString !== ' ' && searchString.length > 1"
->
-  @for (picture of searchPictures; track picture.id) {
-    <div class="picture__item">
-      <a
-        class="link__menu"
-        [routerLink]="['details', picture.id]"
-        routerLinkActive="active"
-      >
-        <img [src]="picture.image_url" alt="No image" class="image__item" />
-      </a>
-      <div class="picture__text__container">
-        <div class="picture__text__title">{{ picture.title }}</div>
-        <span class="picture__text__artist">{{ picture.artist_title }}</span>
-        <span class="picture__text_public">Public</span>
+@if(searchString && searchString !== ' ' && searchString.length > 1){
+  <div class="pictures__container__input">
+    @for (picture of searchPictures; track picture.id) {
+      <div class="picture__item">
+        <a
+          class="link__menu"
+          [routerLink]="['details', picture.id]"
+          routerLinkActive="active"
+        >
+          <img [src]="picture.image_url" alt="No image" class="image__item" />
+        </a>
+        <div class="picture__text__container">
+          <div class="picture__text__title">{{ picture.title }}</div>
+          <span class="picture__text__artist">{{ picture.artist_title }}</span>
+          <span class="picture__text_public">Public</span>
+        </div>
+        <div class="picture__favorites">
+          <button [appIsFavorite]="picture.id" #button class="button__favorites" (click)="setToFavorites(picture, button)">
+            <img src="icons/Vector.png" alt="" />
+          </button>
+        </div>
       </div>
-      <div class="picture__favorites">
-        <button [appIsFavorite]="picture.id" #button class="button__favorites" (click)="setToFavorites(picture, button)">
-          <img src="icons/Vector.png" alt="" />
-        </button>
-      </div>
-    </div>
-  }
-
-  @if(searchForm.controls.search.valid){
-    <select name="sort" (change)="selectChanged($event)" class="input__select">
-      <option value="title">Отсортировать по названию</option>
-      <option value="author">Отсортировать по автору</option>
-      <option value="place">Отсортировать по стране</option>
-    </select>
-  }
-</div>
+    }
+  
+    @if(searchForm.controls.search.valid){
+      <select name="sort" (change)="selectChanged($event)" class="input__select">
+        <option value="title">Отсортировать по названию</option>
+        <option value="author">Отсортировать по автору</option>
+        <option value="place">Отсортировать по стране</option>
+      </select>
+    }
+  </div>
+}
 
 <div class="home__container__text">
   <span class="little__text">Topics for you</span>

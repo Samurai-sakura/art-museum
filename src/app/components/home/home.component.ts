@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { PictureInterface } from "@interfaces/data.interface";
 import { Pagination } from "@interfaces/pagination.interface";
 import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
-import { CommonModule } from "@angular/common";
 import { Config } from "@interfaces/config.interface";
 import { pictureCardMapper } from "@utils/picture-mapper";
 import { LoadingSpinerComponent } from "@components/loading-spiner/loading-spiner.component";
@@ -23,7 +22,6 @@ import { IsFavoriteDirective } from "@app/directives/is-favorite.directive";
     HttpClientModule,
     NgbPaginationModule,
     LoadingSpinerComponent,
-    CommonModule,
     RouterLink,
     ReactiveFormsModule,
     IsFavoriteDirective
@@ -42,7 +40,6 @@ export class HomeComponent implements OnInit {
     prev_url: "",
     current_page: 0,
   };
-  @ViewChild('button') button!: ElementRef;
   searchPictures: PictureInterface[] = [];
   isPagination = false;
   isPicture = true;
@@ -75,10 +72,8 @@ export class HomeComponent implements OnInit {
       this.config = res.config;
       this.pictures = pictureCardMapper(res.data, this.config);
       this.searchPictures = this.pictures;
-      this.loading = false;
     });
     
-    this.loading = true;
     this.paginationService.getData(this.pageNumber)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
