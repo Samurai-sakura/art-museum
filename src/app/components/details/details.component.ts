@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, signal } from "
 import { ActivatedRoute } from "@angular/router";
 import { DetailsService } from "@app/services/response-details-picture.service";
 import { PictureInterface } from "@interfaces/data.interface";
-import { HttpClientModule } from "@angular/common/http";
 import { LoadingSpinerComponent } from "@components/loading-spiner/loading-spiner.component";
 import { CommonModule } from "@angular/common";
 import { Config } from "@interfaces/config.interface";
@@ -16,7 +15,7 @@ import { tap } from "rxjs";
 @Component({
   selector: "app-details",
   standalone: true,
-  imports: [HttpClientModule, LoadingSpinerComponent, CommonModule, IsFavoriteDirective],
+  imports: [LoadingSpinerComponent, CommonModule, IsFavoriteDirective],
   templateUrl: "./details.component.html",
   styleUrl: "./details.component.scss",
   providers: [DetailsService, LocalStorageService],
