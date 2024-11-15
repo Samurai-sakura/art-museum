@@ -1,8 +1,8 @@
-@if(loading){
+@if(isLoading()){
   <app-loading-spiner></app-loading-spiner>
 }
 
-@if(!loading){
+@if(!isLoading()){
   <div class="details__container">
     <div class="picture__container">
       <img [src]="picture.image_url" alt="" class="image__item" />

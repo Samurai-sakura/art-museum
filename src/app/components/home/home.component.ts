@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from "@angular/core";
-import { HttpClientModule } from "@angular/common/http";
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, signal } from "@angular/core";
 import { PictureInterface } from "@interfaces/data.interface";
 import { Pagination } from "@interfaces/pagination.interface";
 import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
@@ -11,7 +10,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { LocalStorageService } from "@app/services/add-remove-local-storage.service";
 import { PaginationService } from "@app/services/response-pagination-pictures.service";
 import { ResponseService } from "@app/services/response-pictures.service";
-import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, Subject, tap } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { IsFavoriteDirective } from "@app/directives/is-favorite.directive";
 
@@ -19,7 +18,6 @@ import { IsFavoriteDirective } from "@app/directives/is-favorite.directive";
   selector: "app-home",
   standalone: true,
   imports: [
-    HttpClientModule,
     NgbPaginationModule,
     LoadingSpinerComponent,
     RouterLink,
@@ -49,26 +47,26 @@ export class HomeComponent implements OnInit {
   };
   searchString = "";
   private searchSubject: Subject<string> = new Subject<string>(); 
-  loading = false;
   pageNumber = 1;
   paginationPictures: PictureInterface[] = [];
+  isLoading = signal<boolean>(false);
 
   searchForm = new FormGroup({
       search: new FormControl("", [Validators.pattern(/^[A-Za-zА-Яа-яЁё\s]+$/)]),
   });
 
-  private destroyRef = inject(DestroyRef);
-
   constructor(
     private responseService: ResponseService,
     private paginationService: PaginationService,
     private localStorageService: LocalStorageService,
-    private cdr: ChangeDetectorRef 
+    private destroyRef: DestroyRef,
   ) {}
 
   ngOnInit(): void {
-    this.loading = true;
-    this.responseService.getData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+    this.responseService.getData().pipe(
+      tap(() => this.isLoading.set(true)),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((res) => {
       this.paginationParameters = res.pagination;
       this.config = res.config;
       this.pictures = pictureCardMapper(res.data, this.config);
@@ -84,8 +82,7 @@ export class HomeComponent implements OnInit {
           this.paginationPictures,
           this.config
         );
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.isLoading.set(false);
       });
 
       this.searchSubject

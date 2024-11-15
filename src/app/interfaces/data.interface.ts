@@ -4,6 +4,7 @@ export interface PictureInterface {
   thumbnail: {
     lqip: string;
     alt_text: string;
+    width: number;
   };
   date_start: string;
   date_end: string;

@@ -9,7 +9,7 @@ export class IsFavoriteDirective implements AfterViewInit, OnInit{
 
   @Input('appIsFavorite') pictureId?: number;
   isFavorite = false;
-
+  favorites: PictureInterface[] = [];
   private _el: ElementRef;
 
   constructor(el: ElementRef) {
@@ -17,12 +17,12 @@ export class IsFavoriteDirective implements AfterViewInit, OnInit{
   }
 
   ngOnInit(): void {
-    const picture = localStorage.getItem('favorites');
-    let pic;
-    if(picture){
-      pic = JSON.parse(picture);
+    let picture;
+    if(typeof window !== 'undefined'){
+      picture = localStorage.getItem('favorites');
+      this.favorites = picture ? JSON.parse(picture).pictures : [];
     }
-    this.isFavorite = pic.pictures.some((obj: PictureInterface) => 
+    this.isFavorite = this.favorites.some((obj: PictureInterface) => 
       Object.values(obj).includes(this.pictureId)
     )
     if(this.isFavorite){

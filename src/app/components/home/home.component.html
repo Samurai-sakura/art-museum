@@ -64,7 +64,7 @@
   <span class="big__text">Our special gallery</span>
 </div>
 
-@if(!loading){
+@if(!isLoading()){
   <div class="pagination__pictures">
     @for (picture of paginationPictures; track picture.id) {
       <div class="pagination__item">
@@ -94,11 +94,11 @@
   </div>
 }
 
-@if(loading){
+@if(isLoading()){
   <app-loading-spiner></app-loading-spiner>
 }
 
-@if(!loading){
+@if(!isLoading()){
   <div class="navigation">
     <ngb-pagination
       [collectionSize]="paginationParameters.total"
@@ -116,11 +116,11 @@
   <span class="big__text">Other works for you</span>
 </div>
 
-@if(loading){
+@if(isLoading()){
   <app-loading-spiner></app-loading-spiner>
 }
 
-@if(!loading){
+@if(!isLoading()){
   <div class="pictures__container">
     @for (picture of pictures; track picture.id) {
       <div class="picture__item">

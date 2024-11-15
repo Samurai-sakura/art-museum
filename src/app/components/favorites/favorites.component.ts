@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { PictureInterface } from "@interfaces/data.interface";
 import { LocalStorageService } from "@app/services/add-remove-local-storage.service";
@@ -15,8 +15,7 @@ import { RouterLink, RouterModule } from "@angular/router";
 })
 export class FavoritesComponent implements OnInit {
   pictures: PictureInterface[] = [];
-  private destroyRef = inject(DestroyRef);
-  constructor(private localStorageService: LocalStorageService) {}
+  constructor(private localStorageService: LocalStorageService, private destroyRef: DestroyRef) {}
 
   ngOnInit(): void {
     // this.loadItems();

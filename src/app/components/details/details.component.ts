@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { DetailsService } from "@app/services/response-details-picture.service";
 import { PictureInterface } from "@interfaces/data.interface";
@@ -11,6 +11,7 @@ import { LocalStorageService } from "@app/services/add-remove-local-storage.serv
 import { onePictureCardMapper } from "@utils/one-picture-mapper";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { IsFavoriteDirective } from "@app/directives/is-favorite.directive";
+import { tap } from "rxjs";
 
 @Component({
   selector: "app-details",
@@ -30,6 +31,7 @@ export class DetailsComponent implements OnInit {
     thumbnail: {
       lqip: "",
       alt_text: "",
+      width: 0,
     },
     date_end: "",
     date_start: "",
@@ -43,7 +45,7 @@ export class DetailsComponent implements OnInit {
     image_url: "",
     main_reference_number: "",
   };
-  loading = false;
+  isLoading = signal<boolean>(false);
   painter_info: Painter = {
     main_reference_number: "",
     painter_nationality: "",
@@ -54,18 +56,18 @@ export class DetailsComponent implements OnInit {
     website_url: "",
   };
 
-  private destroyRef = inject(DestroyRef);
-
   constructor(
     private route: ActivatedRoute,
     private detailsService: DetailsService,
     private localStorageService: LocalStorageService,
-    private cdr: ChangeDetectorRef 
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
-    this.loading = true;
-    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+    this.route.paramMap.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap(() => this.isLoading.set(true))
+    ).subscribe((params) => {
       this.itemId = params.get("id");
 
       this.detailsService.getData(this.itemId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
@@ -75,8 +77,7 @@ export class DetailsComponent implements OnInit {
         this.painter_info.main_reference_number =
           this.picture.date_start + "-" + this.picture.date_end;
         this.painter_info.painter_nationality = this.picture.place_of_origin;
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.isLoading.set(false);
       });
     });
   }
