@@ -106,67 +106,86 @@ export class HomeComponent implements OnInit {
     if (!this.searchForm.get('search')?.value) {
       return;
     }
-    this.searchPictures = this.pictures.filter((picture) =>
-      picture.title.toLowerCase().includes(this.searchForm.value.search!.toLowerCase())
-    );
-    this.searchPictures = this.searchPictures.concat(
-      this.paginationPictures.filter((picture) =>
-        picture.title.toLowerCase().includes(this.searchForm.value.search!.toLowerCase())
-      )
-    );
-    this.searchPictures = this.searchPictures.concat(
-      this.pictures.filter((picture) =>
-        picture.artist_title
-          .toLowerCase()
-          .includes(this.searchForm.value.search!.toLowerCase())
-      )
-    );
-    this.searchPictures = this.searchPictures.concat(
-      this.paginationPictures.filter((picture) =>
-        picture.artist_title
-          .toLowerCase()
-          .includes(this.searchForm.value.search!.toLowerCase())
-      )
+    const searchTerm = this.searchForm.value.search!.toLowerCase();
+
+    const allPictures = [...this.pictures, ...this.paginationPictures];
+
+    this.searchPictures = allPictures.filter((picture) =>
+      picture.title.toLowerCase().includes(searchTerm) || 
+      picture.artist_title.toLowerCase().includes(searchTerm)
     );
     this.searchPictures = this.searchPictures.filter(
       (item, index, self) => index === self.findIndex((t) => t.id === item.id)
     );
   }
 
+      // this.searchPictures = this.pictures.filter((picture) =>
+    //   picture.title.toLowerCase().includes(this.searchForm.value.search!.toLowerCase())
+    // );
+    // this.searchPictures = this.searchPictures.concat(
+    //   this.paginationPictures.filter((picture) =>
+    //     picture.title.toLowerCase().includes(this.searchForm.value.search!.toLowerCase())
+    //   )
+    // );
+    // this.searchPictures = this.searchPictures.concat(
+    //   this.pictures.filter((picture) =>
+    //     picture.artist_title
+    //       .toLowerCase()
+    //       .includes(this.searchForm.value.search!.toLowerCase())
+    //   )
+    // );
+    // this.searchPictures = this.searchPictures.concat(
+    //   this.paginationPictures.filter((picture) =>
+    //     picture.artist_title
+    //       .toLowerCase()
+    //       .includes(this.searchForm.value.search!.toLowerCase())
+    //   )
+    // );
+
   selectChanged(value: Event): void {
     const target = value.target as HTMLSelectElement;
-    if (target.value === "title") {
-      this.searchPictures.sort((a, b) => {
-        if (a.title < b.title) {
-          return -1;
-        }
-        if (a.title > b.title) {
-          return 1;
-        }
-        return 0;
-      });
-    } else if (target.value === "author") {
-      this.searchPictures.sort((a, b) => {
-        if (a.artist_title < b.artist_title) {
-          return -1;
-        }
-        if (a.artist_title > b.artist_title) {
-          return 1;
-        }
-        return 0;
-      });
-    } else {
-      this.searchPictures.sort((a, b) => {
-        if (a.place_of_origin < b.place_of_origin) {
-          return -1;
-        }
-        if (a.place_of_origin > b.place_of_origin) {
-          return 1;
-        }
-        return 0;
-      });
-    }
+    const sortKey = target.value;
+
+    const sortFunc = (a: PictureInterface, b: PictureInterface) => {
+      const aValue = a[sortKey === "title" ? "title" : sortKey === "author" ? "artist_title" : "place_of_origin"];
+      const bValue = b[sortKey === "title" ? "title" : sortKey === "author" ? "artist_title" : "place_of_origin"];
+      
+      return aValue.localeCompare(bValue);
+    };
+    
+    this.searchPictures.sort(sortFunc);
   }
+    // if (target.value === "title") {
+    //   this.searchPictures.sort((a, b) => {
+    //     if (a.title < b.title) {
+    //       return -1;
+    //     }
+    //     if (a.title > b.title) {
+    //       return 1;
+    //     }
+    //     return 0;
+    //   });
+    // } else if (target.value === "author") {
+    //   this.searchPictures.sort((a, b) => {
+    //     if (a.artist_title < b.artist_title) {
+    //       return -1;
+    //     }
+    //     if (a.artist_title > b.artist_title) {
+    //       return 1;
+    //     }
+    //     return 0;
+    //   });
+    // } else {
+    //   this.searchPictures.sort((a, b) => {
+    //     if (a.place_of_origin < b.place_of_origin) {
+    //       return -1;
+    //     }
+    //     if (a.place_of_origin > b.place_of_origin) {
+    //       return 1;
+    //     }
+    //     return 0;
+    //   });
+    // }
 
   onPageChanged(pageNumber: number): void {
     this.paginationService
