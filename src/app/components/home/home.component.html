@@ -64,7 +64,7 @@
   <span class="big__text">Our special gallery</span>
 </div>
 
-@if(!isLoading()){
+@if(!isLoading() && !paginationLoading()){
   <div class="pagination__pictures">
     @for (picture of paginationPictures; track picture.id) {
       <div class="pagination__item">

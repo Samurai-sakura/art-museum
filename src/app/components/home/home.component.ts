@@ -50,6 +50,7 @@ export class HomeComponent implements OnInit {
   pageNumber = 1;
   paginationPictures: PictureInterface[] = [];
   isLoading = signal<boolean>(false);
+  paginationLoading = signal<boolean>(false)
 
   searchForm = new FormGroup({
       search: new FormControl("", [Validators.pattern(/^[A-Za-zА-Яа-яЁё\s]+$/)]),
@@ -190,7 +191,9 @@ export class HomeComponent implements OnInit {
   onPageChanged(pageNumber: number): void {
     this.paginationService
       .getData(pageNumber)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef), 
+        tap(() => this.paginationLoading.set(true)))
       .subscribe((res) => {
         this.paginationPictures = res.data.splice(0, 3);
         this.pageNumber = res.pagination.current_page;
@@ -198,6 +201,7 @@ export class HomeComponent implements OnInit {
           this.paginationPictures,
           this.config
         );
+        this.paginationLoading.set(false);
       });
   }
 
